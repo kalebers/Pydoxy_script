@@ -32,19 +32,6 @@ CLASS_TEMPLATE = """
  */
 """
 
-def is_code_complete(line):
-    """Check if a line of code is likely to be complete."""
-    # Check for semicolon at the end or if it's a one-liner with curly braces
-    return line.strip().endswith(';') or '{' in line or '}' in line
-
-def is_valid_function_declaration(match):
-    """Validate function declarations to avoid matching code snippets."""
-    before_function = match.string[:match.start()].strip()
-    # Check that the match is not preceded by characters like '=', '{', or ',' to avoid assignments or initializations.
-    if before_function.endswith(('=', '{', ',', ':')):
-        return False
-    return True
-
 def add_doxygen_to_file(file_path):
     """
     Fucntion that parses the source code file, and adds the doxygen tags to the functions and variables.
@@ -59,8 +46,6 @@ def add_doxygen_to_file(file_path):
     matches = list(function_pattern.finditer(content))
     if matches:
         for match in reversed(matches):
-            if not is_valid_function_declaration(match):
-                continue
             return_type, function_name, params, const = match.groups()
             params = ', '.join([param.split()[-1] for param in params.split(',') if param])
             doxygen_comment = FUNCTION_TEMPLATE.format(params=params)
@@ -72,8 +57,6 @@ def add_doxygen_to_file(file_path):
     if matches:
         for match in reversed(matches):
             line_start = content[:match.start()].strip().splitlines()[-1]
-            if not is_code_complete(line_start):
-                continue  # Skip if the line is likely incomplete
             doxygen_comment = VARIABLE_TEMPLATE
             content = content[:match.start()] + doxygen_comment + content[match.start():]
 
