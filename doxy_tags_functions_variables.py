@@ -6,6 +6,7 @@ SUPPORTED_EXTENSIONS = ('.cpp', '.hpp', '.h', '.c')  # Add more as needed
 
 # Define the Doxygen templates
 FUNCTION_TEMPLATE = """
+// StateDiagramRef: Instruction TODO
 /**
  * @brief Brief description of the function.
  *
@@ -17,6 +18,7 @@ FUNCTION_TEMPLATE = """
 """
 
 VARIABLE_TEMPLATE = """
+// StateDiagramNaming: Variable Definition TODO
 /**
  * @brief Brief description of the variable.
  *
@@ -25,6 +27,7 @@ VARIABLE_TEMPLATE = """
 """
 
 CLASS_TEMPLATE = """
+// StateDiagramRef: Instruction TODO
 /**
  * @brief Brief description of the class.
  *
@@ -34,14 +37,14 @@ CLASS_TEMPLATE = """
 
 def add_doxygen_to_file(file_path):
     """
-    Fucntion that parses the source code file, and adds the doxygen tags to the functions and variables.
+    Function that parses the source code file, and adds the Doxygen and PlantUML tags to the functions, variables, and classes.
 
     :param file_path: path of the source code files to be modified.
     """    
     with open(file_path, 'r') as file:
         content = file.read()
 
-    # Add Doxygen comments for functions
+    # Add Doxygen and PlantUML comments for functions
     function_pattern = re.compile(r'^\s*(\w[\w\s\*&:<>,]*)\s+(\w+)\s*\(([^)]*)\)\s*(const)?\s*{?', re.MULTILINE)
     matches = list(function_pattern.finditer(content))
     if matches:
@@ -51,7 +54,7 @@ def add_doxygen_to_file(file_path):
             doxygen_comment = FUNCTION_TEMPLATE.format(params=params)
             content = content[:match.start()] + doxygen_comment + content[match.start():]
 
-    # Add Doxygen comments for variables
+    # Add Doxygen and PlantUML comments for variables
     variable_pattern = re.compile(r'^\s*(\w[\w\s\*&:<>,]*)\s+(\w+)\s*(=\s*[^;]+)?\s*;', re.MULTILINE)
     matches = list(variable_pattern.finditer(content))
     if matches:
@@ -60,7 +63,7 @@ def add_doxygen_to_file(file_path):
             doxygen_comment = VARIABLE_TEMPLATE
             content = content[:match.start()] + doxygen_comment + content[match.start():]
 
-    # Add Doxygen comments for classes
+    # Add Doxygen and PlantUML comments for classes
     class_pattern = re.compile(r'^\s*class\s+(\w+)', re.MULTILINE)
     matches = list(class_pattern.finditer(content))
     if matches:
@@ -86,5 +89,5 @@ def process_directory(directory):
 
 if __name__ == "__main__":
     # Set the root directory of the source code project
-    root_directory = "path to project" 
+    root_directory = "..." 
     process_directory(root_directory)
